@@ -13,8 +13,8 @@ let headMoves = { left:false, right:false, up:false, down:false };
 // LOAD MODELS
 // =======================
 async function loadModels(){
-    await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
 
     statusText.innerText = "Models Loaded ✅";
 }
