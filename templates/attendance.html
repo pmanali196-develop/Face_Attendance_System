@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Attendance</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+
+    <!-- ✅ REQUIRED for face recognition -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Attendance</h2>
+
+        <input id="emp_id" placeholder="Employee ID">
+        <input id="dept" placeholder="Department">
+
+        <video id="video" width="280" height="240" autoplay muted></video>
+
+        <p id="status"></p>
+
+        <button onclick="startCamera()">Start Camera</button>
+        <button onclick="verifyAndMark()">Take Attendance</button>
+
+        <div style="display:flex; gap:10px; margin-top: 15px;">
+            <button class="secondary" onclick="goBack()">Back</button>
+            <button class="secondary" onclick="logout()">Logout</button>
+        </div>
+
+    </div>
+
+
+    <script src="/frontend/js/utils.js"></script>
+    <script src="/frontend/js/attendance.js"></script>
+
+    <script>
+        function goBack() {
+            window.location.href = "/dashboard";
+        }
+
+        function logout() {
+            window.location.href = "/";
+        }
+    </script>
+</body>
+
+</html>

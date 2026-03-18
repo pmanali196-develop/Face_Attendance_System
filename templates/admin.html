@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+
+    <!-- ✅ Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    <!-- ✅ Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Admin Panel</h2>
+
+        <input placeholder="Latitude">
+        <input placeholder="Longitude">
+        <input placeholder="Radius">
+
+        <button onclick="setLocation()">Save Location</button>
+
+        <!-- ✅ MAP ADDED -->
+        <div id="map" style="height:300px; margin-top:15px;"></div>
+
+        <!-- ✅ MOVED INSIDE -->
+        <div style="margin-top:15px;">
+            <button class="secondary" onclick="logout()">Logout</button>
+        </div>
+
+    </div>
+
+    <script src="/frontend/js/utils.js"></script>
+    <script src="/frontend/js/admin.js"></script>
+
+    <script>
+        function logout() {
+            window.location.href = "/";
+        }
+    </script>
+</body>
+
+</html>

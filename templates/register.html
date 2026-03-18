@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Register</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+
+    <!-- ✅ Face API -->
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Register</h2>
+
+        <!-- ✅ IDs added -->
+        <input id="emp_id" placeholder="Employee ID">
+        <input id="name" placeholder="Name">
+        <input id="email" placeholder="Email">
+        <input id="dept" placeholder="Department">
+        <input id="password" type="password" placeholder="Password">
+
+        <!-- ✅ Camera -->
+        <video id="video" width="280" height="220" autoplay muted></video>
+        <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+        <p id="status"></p>
+
+        <button onclick="startCamera()">Start Camera</button>
+        <button onclick="startVerification()">Capture Face</button>
+        <button onclick="registerUser()">Register</button>
+
+        <div style="margin-top:15px;">
+            <button class="secondary" onclick="goBack()">Back</button>
+        </div>
+    </div>
+
+    <script src="/frontend/js/utils.js"></script>
+    <script src="/frontend/js/register.js"></script>
+
+    <script>
+        function goBack() {
+            window.location.href = "/";
+        }
+    </script>
+
+</body>
+
+</html>

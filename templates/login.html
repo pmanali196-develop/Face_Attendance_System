@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Login</h2>
+
+        <input id="username" placeholder="Username">
+        <input id="password" type="password" placeholder="Password">
+
+        <p id="status"></p>
+
+        <div style="margin-top: 15px;">
+            <button onclick="login()">Login</button>
+            <button class="secondary" onclick="goToRegister()">New User</button>
+        </div>
+    </div>
+
+    <script src="/frontend/js/utils.js"></script>
+    <script src="/frontend/js/login.js"></script>
+
+    <script>
+        // ✅ Enter key support
+        document.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+                login();
+            }
+        });
+
+        function goToRegister() {
+            window.location.href = "/register";
+        }
+    </script>
+</body>
+
+</html>

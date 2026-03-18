@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/frontend/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h2>Dashboard</h2>
+
+        <button onclick="goToAttendance()">Take Attendance</button>
+
+        <div style="margin-top:15px;">
+            <button class="secondary" onclick="logout()">Logout</button>
+        </div>
+    </div>
+    
+    <script src="/frontend/js/utils.js"></script>
+
+    <script>
+        function goToAttendance() {
+            window.location.href = "/attendance";
+        }
+
+        function logout() {
+            window.location.href = "/";
+        }
+    </script>
+</body>
+
+</html>
