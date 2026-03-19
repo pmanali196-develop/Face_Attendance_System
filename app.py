@@ -2,7 +2,7 @@
 from flask import Flask, render_template, request, jsonify, session, redirect
 from flask_cors import CORS
 import firebase_admin
-from firebase_admin import credentials, firestore
+from firebase_admin import credentials, firestore, storage
 import os
 import json
 import base64
@@ -19,7 +19,9 @@ if not firebase_admin._apps:
 
     cred = credentials.Certificate(firebase_key)
 
-    firebase_admin.initialize_app(cred)
+    firebase_admin.initialize_app(cred, {
+        'storageBucket': 'online-attendance-system-5b66b.appspot.com'
+    })
 
 db = firestore.client()
 
@@ -106,7 +108,8 @@ def register():
             "email": data['email'],
             "department": data['department'],
             "password": data['password'],
-            "role": data['role']
+            "role": data['role'],
+            "images": image_urls
         })
 
         # Save login (plaintext password)
@@ -117,22 +120,41 @@ def register():
             "employee_id": emp_id
         })
 
-        # Save images locally
-        folder = os.path.join(DATASET_PATH, emp_id)
-        os.makedirs(folder, exist_ok=True)
+        bucket = storage.bucket()
+
+        image_urls = []
 
         for i, img in enumerate(data['images']):
             try:
                 img_data = base64.b64decode(img.split(',')[1])
-                file_path = os.path.join(folder, f"{i}.jpg")
 
-                with open(file_path, "wb") as f:
-                    f.write(img_data)
+                blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
+                blob.upload_from_string(img_data, content_type='image/jpeg')
 
-                print("Saved:", file_path)
+                # Make public (for easy access)
+                blob.make_public()
+
+                image_urls.append(blob.public_url)
 
             except Exception as e:
-                print("Error saving image:", e)
+                print("Upload error:", e)
+
+        # Save images locally
+        # folder = os.path.join(DATASET_PATH, emp_id)
+        # os.makedirs(folder, exist_ok=True)
+
+        # for i, img in enumerate(data['images']):
+        #     try:
+        #         img_data = base64.b64decode(img.split(',')[1])
+        #         file_path = os.path.join(folder, f"{i}.jpg")
+
+        #         with open(file_path, "wb") as f:
+        #             f.write(img_data)
+
+        #         print("Saved:", file_path)
+
+        #     except Exception as e:
+        #         print("Error saving image:", e)
             # img_data = base64.b64decode(img.split(',')[1])
             # with open(os.path.join(folder, f"{i}.jpg"), "wb") as f:
             #     f.write(img_data)
