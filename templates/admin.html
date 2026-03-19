@@ -16,12 +16,14 @@
     <div class="container">
         <h2>Admin Panel</h2>
 
-        <input placeholder="Latitude">
-        <input placeholder="Longitude">
-        <input placeholder="Radius">
+        <input id="locationInput" placeholder="Enter Location / Pincode">
+        <input id="radius" placeholder="Radius (meters)">
 
+        <button onclick="searchLocation()">Search Location</button>
+        <p id="locationName"></p>
         <button onclick="setLocation()">Save Location</button>
 
+        <div id="map" style="height:300px; margin-top:15px;"></div>
         <!-- MAP ADDED -->
         <div id="map" style="height:300px; margin-top:15px;"></div>
 

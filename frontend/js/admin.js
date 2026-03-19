@@ -20,29 +20,66 @@ function initMap() {
     });
 }
 
-// Save location
-async function setLocation() {
+// Search location using OpenStreetMap
+async function searchLocation(){
 
-    let lat = document.getElementById('lat').value;
-    let lng = document.getElementById('lng').value;
-    let radius = document.getElementById('radius').value;
+    let query = document.getElementById('locationInput').value;
 
-    if (!lat || !lng || !radius) {
-        alert("Please fill all fields");
+    if(!query){
+        alert("Enter location or pincode");
         return;
     }
 
-    await fetch('/api/set-location', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+    let res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}`);
+    let data = await res.json();
+
+    document.getElementById('locationName').innerText = data[0].display_name;
+
+    if(data.length === 0){
+        alert("Location not found");
+        return;
+    }
+
+    let lat = parseFloat(data[0].lat);
+    let lon = parseFloat(data[0].lon);
+
+    // Move map
+    map.setView([lat, lon], 15);
+
+    if(marker) map.removeLayer(marker);
+    marker = L.marker([lat, lon]).addTo(map);
+
+    // Store temporarily
+    window.selectedLat = lat;
+    window.selectedLng = lon;
+}
+
+// Save location
+async function setLocation(){
+
+    let radius = document.getElementById('radius').value;
+
+    if(!window.selectedLat || !window.selectedLng){
+        alert("Search location first");
+        return;
+    }
+
+    if(!radius){
+        alert("Enter radius");
+        return;
+    }
+
+    await fetch('/api/set-location',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
-            lat: parseFloat(lat),
-            lng: parseFloat(lng),
+            lat: window.selectedLat,
+            lng: window.selectedLng,
             radius: parseFloat(radius)
         })
     });
 
-    alert("Location Saved ✅");
+    alert("Location Saved");
 }
 
 // Initialize map AFTER page loads
