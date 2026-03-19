@@ -95,8 +95,7 @@ async function startVerification() {
         }
 
     }, 500);
-    print("Saving images for:", emp_id)
-    print("Total images:", len(data['images']))
+    console.log("Images captured:", images.length);
 }
 
 // REGISTER USER

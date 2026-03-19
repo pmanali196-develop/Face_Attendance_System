@@ -25,7 +25,7 @@ db = firestore.client()
 
 # DATASET PATH
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH = os.path.join(BASE_DIR, "dataset")
+DATASET_PATH = os.path.abspath("dataset")
 os.makedirs(DATASET_PATH, exist_ok=True)
 
 # ROUTES (PAGES)
@@ -122,9 +122,20 @@ def register():
         os.makedirs(folder, exist_ok=True)
 
         for i, img in enumerate(data['images']):
-            img_data = base64.b64decode(img.split(',')[1])
-            with open(os.path.join(folder, f"{i}.jpg"), "wb") as f:
-                f.write(img_data)
+            try:
+                img_data = base64.b64decode(img.split(',')[1])
+                file_path = os.path.join(folder, f"{i}.jpg")
+
+                with open(file_path, "wb") as f:
+                    f.write(img_data)
+
+                print("Saved:", file_path)
+
+            except Exception as e:
+                print("Error saving image:", e)
+            # img_data = base64.b64decode(img.split(',')[1])
+            # with open(os.path.join(folder, f"{i}.jpg"), "wb") as f:
+            #     f.write(img_data)
 
         print("Saving images for:", emp_id)
         print("Total images:", len(data['images']))
