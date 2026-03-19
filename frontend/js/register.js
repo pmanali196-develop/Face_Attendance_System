@@ -80,7 +80,9 @@ async function startVerification() {
         if (count >= 15) {
 
             clearInterval(interval);
-
+            
+            console.log("Images captured:", images.length);
+            
             if (!blinkDetected) {
                 alert("Blink required ❌");
                 return;
@@ -95,7 +97,6 @@ async function startVerification() {
         }
 
     }, 500);
-    console.log("Images captured:", images.length);
 }
 
 // REGISTER USER

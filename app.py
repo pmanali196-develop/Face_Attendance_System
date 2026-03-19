@@ -101,6 +101,28 @@ def register():
         data = request.json
         emp_id = data['employee_id']
 
+        image_urls = []
+
+        # Debug line
+        print("Received images:", len(data['images']))
+
+        bucket = storage.bucket()
+
+        for i, img in enumerate(data['images']):
+            try:
+                img_data = base64.b64decode(img.split(',')[1])
+
+                blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
+                blob.upload_from_string(img_data, content_type='image/jpeg')
+
+                # Make public (for easy access)
+                blob.make_public()
+
+                image_urls.append(blob.public_url)
+
+            except Exception as e:
+                print("Upload error:", e)
+
         # Save employee
         db.collection('employee').document(emp_id).set({
             "employee_id": emp_id,
@@ -119,25 +141,6 @@ def register():
             "role": data['role'],
             "employee_id": emp_id
         })
-
-        bucket = storage.bucket()
-
-        image_urls = []
-
-        for i, img in enumerate(data['images']):
-            try:
-                img_data = base64.b64decode(img.split(',')[1])
-
-                blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
-                blob.upload_from_string(img_data, content_type='image/jpeg')
-
-                # Make public (for easy access)
-                blob.make_public()
-
-                image_urls.append(blob.public_url)
-
-            except Exception as e:
-                print("Upload error:", e)
 
         # Save images locally
         # folder = os.path.join(DATASET_PATH, emp_id)
@@ -159,8 +162,8 @@ def register():
             # with open(os.path.join(folder, f"{i}.jpg"), "wb") as f:
             #     f.write(img_data)
 
-        print("Saving images for:", emp_id)
-        print("Total images:", len(data['images']))
+        # print("Saving images for:", emp_id)
+        # print("Total images:", len(data['images']))
 
         return jsonify({"success": True})
 
@@ -186,6 +189,9 @@ def get_employee(emp_id):
 def set_location():
     try:
         data = request.json
+
+        # Debug line
+        print("Received images:", len(data['images']))
 
         db.collection('config').document('location').set({
             "lat": data['lat'],
