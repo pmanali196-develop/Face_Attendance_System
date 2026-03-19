@@ -20,7 +20,7 @@ if not firebase_admin._apps:
     cred = credentials.Certificate(firebase_key)
 
     firebase_admin.initialize_app(cred, {
-        'storageBucket': 'online-attendance-system-5b66b.appspot.com'
+        'storageBucket': 'online-attendance-system-5b66b.firebasestorage.com'
     })
 
 db = firestore.client()
