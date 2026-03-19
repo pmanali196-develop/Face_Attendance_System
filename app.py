@@ -1,6 +1,4 @@
-# =======================
 # IMPORTS
-# =======================
 from flask import Flask, render_template, request, jsonify, session, redirect
 from flask_cors import CORS
 import firebase_admin
@@ -9,17 +7,13 @@ import os
 import json
 import base64
 
-# =======================
 # APP CONFIG
-# =======================
 app = Flask(__name__, template_folder='templates', static_folder='frontend')
 CORS(app)
 
 app.secret_key = "supersecretkey"
 
-# =======================
 # FIREBASE INIT
-# =======================
 if not firebase_admin._apps:
     firebase_key = json.loads(os.environ["FIREBASE_KEY"])
 
@@ -29,16 +23,12 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# =======================
 # DATASET PATH
-# =======================
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.join(BASE_DIR, "dataset")
 os.makedirs(DATASET_PATH, exist_ok=True)
 
-# =======================
 # ROUTES (PAGES)
-# =======================
 @app.route('/')
 def login_page():
     return render_template('login.html')
@@ -65,9 +55,7 @@ def admin():
         return redirect('/')
     return render_template('admin.html')
 
-# =======================
 # LOGIN API
-# =======================
 @app.route('/api/login', methods=['POST'])
 def login():
     try:
@@ -80,10 +68,10 @@ def login():
         for user in users:
             u = user.to_dict()
 
-            # 🔥 Plaintext password check
+            # Plaintext password check
             if u['password'] == data['password']:
                 session['role'] = u['role']
-                session['employee_id'] = u.get('employee_id')
+                session['email'] = u.get('email')
 
                 return jsonify({
                     "success": True,
@@ -101,9 +89,7 @@ def logout():
     session.clear()
     return redirect('/')
 
-# =======================
 # REGISTER API
-# =======================
 @app.route('/api/register', methods=['POST'])
 def register():
     try:
@@ -140,9 +126,7 @@ def register():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# =======================
 # GET EMPLOYEE
-# =======================
 @app.route('/api/employee/<emp_id>')
 def get_employee(emp_id):
     try:
@@ -156,9 +140,7 @@ def get_employee(emp_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# =======================
 # LOCATION APIs
-# =======================
 @app.route('/api/set-location', methods=['POST'])
 def set_location():
     try:
@@ -189,9 +171,7 @@ def get_location():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# =======================
 # ATTENDANCE API
-# =======================
 @app.route('/api/attendance', methods=['POST'])
 def mark_attendance():
     try:
@@ -209,9 +189,7 @@ def mark_attendance():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# =======================
 # RUN APP
-# =======================
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)

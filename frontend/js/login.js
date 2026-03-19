@@ -30,7 +30,7 @@ async function login() {
 
             print(data.role);
 
-            // 🔥 ROLE-BASED REDIRECTION
+            // ROLE-BASED REDIRECTION
             if (data.role === "admin") {
                 window.location.href = "/admin";
             } else {

@@ -3,35 +3,29 @@ console.log("Attendance script loaded");
 let video = document.getElementById('video');
 let statusText = document.getElementById('status');
 
-// =======================
 // LOAD MODELS
-// =======================
 async function loadModels(){
     await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
     await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
     await faceapi.nets.faceRecognitionNet.loadFromUri('frontend/models');
 
-    statusText.innerText = "Models Loaded ✅";
+    statusText.innerText = "Models Loaded";
 }
 
 loadModels();
 
-// =======================
 // CAMERA
-// =======================
 async function startCamera(){
     try{
         let stream = await navigator.mediaDevices.getUserMedia({video:true});
         video.srcObject = stream;
         statusText.innerText = "Camera Started";
     }catch{
-        alert("Camera access denied ❌");
+        alert("Camera access denied");
     }
 }
 
-// =======================
 // GPS CHECK
-// =======================
 async function checkLocation(){
 
     return new Promise((resolve, reject)=>{
@@ -42,7 +36,7 @@ async function checkLocation(){
             let loc = await res.json();
 
             if(!loc.lat){
-                alert("Admin has not set location ❌");
+                alert("Admin has not set location");
                 reject();
                 return;
             }
@@ -55,23 +49,21 @@ async function checkLocation(){
             );
 
             if(dist > loc.radius){
-                alert("Outside company area ❌");
+                alert("Outside company area");
                 reject();
             }else{
                 resolve();
             }
 
         }, ()=>{
-            alert("Location permission denied ❌");
+            alert("Location permission denied");
             reject();
         });
 
     });
 }
 
-// =======================
 // LOAD DATASET
-// =======================
 async function loadLabeledImages(empId){
 
     const descriptions = [];
@@ -95,9 +87,7 @@ async function loadLabeledImages(empId){
     return new faceapi.LabeledFaceDescriptors(empId, descriptions);
 }
 
-// =======================
 // MAIN FUNCTION
-// =======================
 async function verifyAndMark(){
 
     let empId = document.getElementById('emp_id').value;
@@ -107,7 +97,7 @@ async function verifyAndMark(){
         return;
     }
 
-    // 🔥 STEP 1: GPS CHECK
+    // STEP 1: GPS CHECK
     try{
         await checkLocation();
     }catch{
@@ -119,7 +109,7 @@ async function verifyAndMark(){
     let labeled = await loadLabeledImages(empId);
 
     if(labeled.descriptors.length === 0){
-        alert("No dataset found ❌");
+        alert("No dataset found");
         return;
     }
 
@@ -150,20 +140,18 @@ async function verifyAndMark(){
             clearInterval(interval);
 
             if(match.label === "unknown"){
-                alert("Face not matched ❌");
+                alert("Face not matched");
                 return;
             }
 
-            // ✅ SUCCESS
+            // SUCCESS
             await markAttendance(empId);
         }
 
     }, 500);
 }
 
-// =======================
 // SAVE ATTENDANCE
-// =======================
 async function markAttendance(empId){
 
     await fetch('/api/attendance',{
@@ -176,6 +164,6 @@ async function markAttendance(empId){
         })
     });
 
-    alert("Attendance Marked ✅");
+    alert("Attendance Marked");
     window.location.href = "/dashboard";
 }

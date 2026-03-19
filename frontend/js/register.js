@@ -9,21 +9,17 @@ let images = [];
 let blinkDetected = false;
 let headMoves = { left:false, right:false, up:false, down:false };
 
-// =======================
 // LOAD MODELS
-// =======================
 console.log("faceapi:", typeof faceapi);
 async function loadModels(){
     await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
     await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
 
-    statusText.innerText = "Models Loaded ✅";
+    // statusText.innerText = "Models Loaded";
 }
 loadModels();
 
-// =======================
 // CAMERA
-// =======================
 async function startCamera(){
     try{
         let stream = await navigator.mediaDevices.getUserMedia({video:true});
@@ -34,9 +30,7 @@ async function startCamera(){
     }
 }
 
-// =======================
 // CAPTURE + VERIFY
-// =======================
 async function startVerification(){
 
     images = [];
@@ -97,19 +91,17 @@ async function startVerification(){
                 return;
             }
 
-            statusText.innerText = "Verification Completed ✅";
+            statusText.innerText = "Verification Completed";
         }
 
     }, 500);
 }
 
-// =======================
 // REGISTER USER
-// =======================
 async function registerUser(){
 
     if(images.length < 15){
-        alert("Complete face verification first ❌");
+        alert("Complete face verification first");
         return;
     }
 
@@ -131,9 +123,9 @@ async function registerUser(){
     let r = await res.json();
 
     if(r.success){
-        alert("Registered Successfully ✅");
+        alert("Registered Successfully");
         window.location.href = "/";
     }else{
-        alert("Registration failed ❌");
+        alert("Registration failed");
     }
 }
