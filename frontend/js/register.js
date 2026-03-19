@@ -111,6 +111,7 @@ async function registerUser(){
         email: document.getElementById('email').value,
         department: document.getElementById('dept').value,
         password: document.getElementById('password').value,
+        role: document.getElementById('role').value,
         images: images
     };
 

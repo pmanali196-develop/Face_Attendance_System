@@ -71,7 +71,7 @@ def login():
             # Plaintext password check
             if u['password'] == data['password']:
                 session['role'] = u['role']
-                session['email'] = u.get('email')
+                session['employee_id'] = u.get('employee_id')
 
                 return jsonify({
                     "success": True,
@@ -106,9 +106,9 @@ def register():
 
         # Save login (plaintext password)
         db.collection('login').add({
-            "username": emp_id,
+            "username": data['email'],
             "password": data['password'],
-            "role": "employee",
+            "role": data['role'],
             "employee_id": emp_id
         })
 
