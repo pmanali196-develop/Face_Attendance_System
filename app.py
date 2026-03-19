@@ -189,6 +189,9 @@ def mark_attendance():
             "check_out": data.get('check_out')
         })
 
+        print("Saving images for:", emp_id)
+        print("Total images:", len(data['images']))
+
         return jsonify({"status": "success"})
 
     except Exception as e:
