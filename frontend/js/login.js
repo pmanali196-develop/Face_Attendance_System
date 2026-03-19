@@ -28,6 +28,8 @@ async function login() {
 
         if (data.success) {
 
+            print(data.role);
+
             // 🔥 ROLE-BASED REDIRECTION
             if (data.role === "admin") {
                 window.location.href = "/admin";
