@@ -126,6 +126,9 @@ def register():
             with open(os.path.join(folder, f"{i}.jpg"), "wb") as f:
                 f.write(img_data)
 
+        print("Saving images for:", emp_id)
+        print("Total images:", len(data['images']))
+
         return jsonify({"success": True})
 
     except Exception as e:
@@ -188,9 +191,6 @@ def mark_attendance():
             "check_in": data.get('check_in'),
             "check_out": data.get('check_out')
         })
-
-        print("Saving images for:", emp_id)
-        print("Total images:", len(data['images']))
 
         return jsonify({"status": "success"})
 
