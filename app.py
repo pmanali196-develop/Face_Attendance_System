@@ -104,7 +104,7 @@ def register():
             "employee_id": emp_id,
             "name": data['name'],
             "email": data['email'],
-            "department": data['department']
+            "department": data['department'],
             "password": data['password'],
             "role": data['role']
         })
