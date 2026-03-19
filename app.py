@@ -73,6 +73,9 @@ def login():
                 session['role'] = u['role']
                 session['employee_id'] = u.get('employee_id')
 
+                if '@' not in data['username']:
+                    return jsonify({"success": False, "error": "Use email"}), 400
+
                 return jsonify({
                     "success": True,
                     "role": u['role']
@@ -102,6 +105,8 @@ def register():
             "name": data['name'],
             "email": data['email'],
             "department": data['department']
+            "password": data['password'],
+            "role": data['role']
         })
 
         # Save login (plaintext password)

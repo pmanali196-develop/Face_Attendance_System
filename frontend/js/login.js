@@ -10,6 +10,11 @@ async function login() {
         return;
     }
 
+    if (!username.includes("@")) {
+        alert("Please enter valid email ❌");
+        return;
+    }
+
     try {
         let res = await fetch('/api/login', {
             method: 'POST',
