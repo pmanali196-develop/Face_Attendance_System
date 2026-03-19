@@ -1,7 +1,9 @@
 async function login() {
 
     let username = document.getElementById('username').value;
+    console.log(username);
     let password = document.getElementById('password').value;
+    console.log(password);
 
     if (!username || !password) {
         alert("Please enter username and password");
