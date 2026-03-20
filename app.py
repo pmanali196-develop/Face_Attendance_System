@@ -68,8 +68,6 @@ def login():
     try:
         data = request.json
 
-        print("Images Received: ", len(data['images']))
-
         users = db.collection('login') \
             .where('username', '==', data['username']) \
             .stream()
