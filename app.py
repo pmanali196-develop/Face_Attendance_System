@@ -15,9 +15,14 @@ app.secret_key = "supersecretkey"
 
 # FIREBASE INIT
 if not firebase_admin._apps:
-    firebase_key = json.loads(os.environ["FIREBASE_KEY"])
 
-    cred = credentials.Certificate(firebase_key)
+    if os.environ.get("FIREBASE_KEY"):
+        firebase_key = json.loads(os.environ["FIREBASE_KEY"])
+
+        cred = credentials.Certificate(firebase_key)
+
+    else:
+        cred = credentials.Certificate("firebase_key.json")
 
     firebase_admin.initialize_app(cred, {
         'storageBucket': 'online-attendance-system-5b66b.firebasestorage.com'
@@ -63,6 +68,8 @@ def login():
     try:
         data = request.json
 
+        print("Images Received: ", len(data['images']))
+
         users = db.collection('login') \
             .where('username', '==', data['username']) \
             .stream()
@@ -99,6 +106,10 @@ def logout():
 def register():
     try:
         data = request.json
+
+        # Debug line
+        print("Received images:", len(data['images']))
+
         emp_id = data['employee_id']
 
         image_urls = []
@@ -189,9 +200,6 @@ def get_employee(emp_id):
 def set_location():
     try:
         data = request.json
-
-        # Debug line
-        print("Received images:", len(data['images']))
 
         db.collection('config').document('location').set({
             "lat": data['lat'],
