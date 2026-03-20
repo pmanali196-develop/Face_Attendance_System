@@ -12,8 +12,8 @@ let headMoves = { left: false, right: false, up: false, down: false };
 // LOAD MODELS
 console.log("faceapi:", typeof faceapi);
 async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
 
     // statusText.innerText = "Models Loaded";
 }
@@ -82,7 +82,7 @@ async function startVerification() {
             clearInterval(interval);
             
             console.log("Images captured:", images.length);
-            
+
             if (!blinkDetected) {
                 alert("Blink required ❌");
                 return;
