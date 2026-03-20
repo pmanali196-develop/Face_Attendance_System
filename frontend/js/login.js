@@ -33,7 +33,7 @@ async function login() {
 
         if (data.success) {
 
-            print(data.role);
+            console.log(data.role);
 
             // ROLE-BASED REDIRECTION
             if (data.role === "admin") {
