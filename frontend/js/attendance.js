@@ -66,11 +66,18 @@ async function checkLocation(){
 // LOAD DATASET
 async function loadLabeledImages(empId){
 
+    let res = await fetch(`/api/employee/${empId}`);
+    let user = await res.json();
+
+    if(!user.images || user.images.length === 0){
+        return null;
+    }
+
     const descriptions = [];
 
-    for(let i=0;i<15;i++){
+    for(let url of user.images){
         try{
-            const img = await faceapi.fetchImage(`/dataset/${empId}/${i}.jpg`);
+            const img = await faceapi.fetchImage(url);
 
             const detection = await faceapi.detectSingleFace(img)
                 .withFaceLandmarks()
@@ -80,7 +87,7 @@ async function loadLabeledImages(empId){
                 descriptions.push(detection.descriptor);
             }
         }catch(e){
-            console.log("Image load error", i);
+            console.log("Image load error");
         }
     }
 

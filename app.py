@@ -110,24 +110,37 @@ def register():
 
         emp_id = data['employee_id']
 
-        image_urls = []
 
         # Debug line
-        print("Received images:", len(data['images']))
+        # print("Received images:", len(data['images']))
 
         bucket = storage.bucket()
+        image_urls = []
 
         for i, img in enumerate(data['images']):
             try:
+                print("Uploading image:", i)
+
                 img_data = base64.b64decode(img.split(',')[1])
 
                 blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
                 blob.upload_from_string(img_data, content_type='image/jpeg')
 
-                # Make public (for easy access)
                 blob.make_public()
 
+                print("Uploaded:", blob.public_url)  # 🔥 DEBUG
+
                 image_urls.append(blob.public_url)
+
+                # img_data = base64.b64decode(img.split(',')[1])
+
+                # blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
+                # blob.upload_from_string(img_data, content_type='image/jpeg')
+
+                # # Make public (for easy access)
+                # blob.make_public()
+
+                # image_urls.append(blob.public_url)
 
             except Exception as e:
                 print("Upload error:", e)
