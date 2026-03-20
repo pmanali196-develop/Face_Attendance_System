@@ -5,9 +5,10 @@ let statusText = document.getElementById('status');
 
 // LOAD MODELS
 async function loadModels(){
-    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-    await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+    await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
+    await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
+    await faceapi.nets.faceRecognitionNet.loadFromUri('frontend/models');
+    await faceapi.nets.tiny_yolov2.loadFromUri('frontend/models');
 
     statusText.innerText = "Models Loaded";
 }
