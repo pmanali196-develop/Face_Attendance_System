@@ -14,7 +14,7 @@ console.log("faceapi:", typeof faceapi);
 async function loadModels() {
     await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
     await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
-    await faceapi.nets.tiny_yolov2.loadFromUri('frontend/models');
+    // await faceapi.nets.tiny_yolov2.loadFromUri('frontend/models');
 
     // statusText.innerText = "Models Loaded";
 }
