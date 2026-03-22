@@ -25,7 +25,7 @@ if not firebase_admin._apps:
         cred = credentials.Certificate("firebase_key.json")
 
     firebase_admin.initialize_app(cred, {
-        'storageBucket': 'online-attendance-system-5b66b.firebasestorage.com'
+        'storageBucket': 'online-attendance-system-5b66b.firebasestorage.app'
     })
 
 db = firestore.client()
@@ -115,20 +115,27 @@ def register():
         # print("Received images:", len(data['images']))
 
         bucket = storage.bucket()
+        print("Using bucket:", bucket.name)
         image_urls = []
 
         for i, img in enumerate(data['images']):
+            print("Processing image: ", i)
             try:
-                print("Uploading image:", i)
+                # print("Uploading image:", i)
 
                 img_data = base64.b64decode(img.split(',')[1])
 
                 blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
+
+                print("Uploading...")
+
                 blob.upload_from_string(img_data, content_type='image/jpeg')
+
+                print("Uploaded successfully")
 
                 blob.make_public()
 
-                print("Uploaded:", blob.public_url)  # 🔥 DEBUG
+                print("Uploaded:", blob.public_url)  # DEBUG
 
                 image_urls.append(blob.public_url)
 
@@ -144,6 +151,8 @@ def register():
 
             except Exception as e:
                 print("Upload error:", e)
+
+        print("Final URLs:", len(image_urls))
 
         # Save employee
         db.collection('employee').document(emp_id).set({
