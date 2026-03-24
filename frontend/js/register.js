@@ -15,14 +15,14 @@ let modelsLoaded = false;
 console.log("faceapi:", typeof faceapi);
 async function loadModels(){
 
-    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/frontend/models');
 
-    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+    await faceapi.nets.faceLandmark68Net.loadFromUri('/frontend/models');
 
-    await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+    await faceapi.nets.faceRecognitionNet.loadFromUri('/frontend/models');
 
     // ADD THIS (IMPORTANT FIX)
-    await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+    await faceapi.nets.ssdMobilenetv1.loadFromUri('/frontend/models');
 
     modelsLoaded = true;
 
@@ -64,7 +64,7 @@ async function startVerification() {
             alert("Models not loaded yet");
             return;
         }
-        
+
         if (!detection) {
             statusText.innerText = "Face not detected";
             return;
