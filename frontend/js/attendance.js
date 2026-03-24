@@ -3,29 +3,37 @@ console.log("Attendance script loaded");
 let video = document.getElementById('video');
 let statusText = document.getElementById('status');
 
-// LOAD MODELS
-async function loadModels(){
-    await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
-    // await faceapi.nets.faceRecognitionNet.loadFromUri('frontend/models');
-    // await faceapi.nets.tiny_yolov2.loadFromUri('frontend/models');
+let modelsLoaded = false;
 
+// LOAD MODELS
+async function loadModels() {
+
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+
+    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+
+    await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+
+    // ADD THIS (IMPORTANT FIX)
+    await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+
+    modelsLoaded = true;
     statusText.innerText = "Models Loaded";
 }
 
 loadModels();
 
-async function fetchEmployee(){
+async function fetchEmployee() {
 
     let empId = document.getElementById('emp_id').value;
     let dept = document.getElementById('dept').value;
 
-    if(!empId){
+    if (!empId) {
         document.getElementById('emp_name').innerText = "";
         return;
     }
 
-    try{
+    try {
         let res = await fetch(`/api/employee/${empId}`);
         // let res1 = await fetch(`/api/employee/${dept}`);
         let data = await res.json();
@@ -33,24 +41,24 @@ async function fetchEmployee(){
 
         console.log(data.name);
 
-        if(data && data.name){
+        if (data && data.name) {
             document.getElementById('emp_name').innerText = "Name: " + data.name;
-        }else{
+        } else {
             document.getElementById('emp_name').innerText = "Employee not found ❌";
         }
 
-    }catch{
+    } catch {
         document.getElementById('emp_name').innerText = "Error fetching data";
     }
 }
 
 // CAMERA
-async function startCamera(){
-    try{
-        let stream = await navigator.mediaDevices.getUserMedia({video:true});
+async function startCamera() {
+    try {
+        let stream = await navigator.mediaDevices.getUserMedia({ video: true });
         video.srcObject = stream;
         statusText.innerText = "Camera Started";
-    }catch{
+    } catch {
         alert("Camera access denied");
     }
 }
@@ -94,29 +102,34 @@ async function startCamera(){
 // }
 
 // LOAD DATASET
-async function loadLabeledImages(empId){
+async function loadLabeledImages(empId) {
 
     let res = await fetch(`/api/employee/${empId}`);
     let user = await res.json();
 
-    if(!user.images || user.images.length === 0){
+    if (!user.images || user.images.length === 0) {
         return null;
     }
 
     const descriptions = [];
 
-    for(let url of user.images){
-        try{
+    for (let url of user.images) {
+        try {
             const img = await faceapi.fetchImage(url);
 
             const detection = await faceapi.detectSingleFace(img)
                 .withFaceLandmarks()
                 .withFaceDescriptor();
 
-            if(detection){
+            if (detection) {
                 descriptions.push(detection.descriptor);
             }
-        }catch(e){
+
+            if (!modelsLoaded) {
+                alert("Models not loaded yet");
+                return;
+            }
+        } catch (e) {
             console.log("Image load error");
         }
     }
@@ -125,11 +138,11 @@ async function loadLabeledImages(empId){
 }
 
 // MAIN FUNCTION
-async function verifyAndMark(){
+async function verifyAndMark() {
 
     let empId = document.getElementById('emp_id').value;
 
-    if(!empId){
+    if (!empId) {
         alert("Enter Employee ID");
         return;
     }
@@ -145,7 +158,7 @@ async function verifyAndMark(){
 
     let labeled = await loadLabeledImages(empId);
 
-    if(labeled.descriptors.length === 0){
+    if (labeled.descriptors.length === 0) {
         alert("No dataset found");
         return;
     }
@@ -154,14 +167,19 @@ async function verifyAndMark(){
 
     let attempts = 0;
 
-    let interval = setInterval(async ()=>{
+    let interval = setInterval(async () => {
 
         const detection = await faceapi.detectSingleFace(
             video,
             new faceapi.TinyFaceDetectorOptions()
         ).withFaceLandmarks().withFaceDescriptor();
 
-        if(!detection){
+        if (!modelsLoaded) {
+            alert("Models not loaded yet");
+            return;
+        }
+
+        if (!detection) {
             statusText.innerText = "No face detected";
             return;
         }
@@ -172,11 +190,11 @@ async function verifyAndMark(){
 
         statusText.innerText = `Matching... ${attempts}`;
 
-        if(attempts > 10){
+        if (attempts > 10) {
 
             clearInterval(interval);
 
-            if(match.label === "unknown"){
+            if (match.label === "unknown") {
                 alert("Face not matched");
                 return;
             }
@@ -189,12 +207,12 @@ async function verifyAndMark(){
 }
 
 // SAVE ATTENDANCE
-async function markAttendance(empId){
+async function markAttendance(empId) {
 
-    await fetch('/api/attendance',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({
+    await fetch('/api/attendance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
             employee_id: empId,
             date: new Date().toISOString().split('T')[0],
             check_in: new Date().toLocaleTimeString()

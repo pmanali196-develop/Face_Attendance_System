@@ -9,15 +9,26 @@ let images = [];
 let blinkDetected = false;
 let headMoves = { left: false, right: false, up: false, down: false };
 
+let modelsLoaded = false;
+
 // LOAD MODELS
 console.log("faceapi:", typeof faceapi);
-async function loadModels() {
-    await faceapi.nets.tinyFaceDetector.loadFromUri('frontend/models');
-    await faceapi.nets.faceLandmark68Net.loadFromUri('frontend/models');
-    // await faceapi.nets.tiny_yolov2.loadFromUri('frontend/models');
+async function loadModels(){
 
-    // statusText.innerText = "Models Loaded";
+    await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+
+    await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+
+    await faceapi.nets.faceRecognitionNet.loadFromUri('/models');
+
+    // ADD THIS (IMPORTANT FIX)
+    await faceapi.nets.ssdMobilenetv1.loadFromUri('/models');
+
+    modelsLoaded = true;
+
+    statusText.innerText = "Models Loaded";
 }
+
 loadModels();
 
 // CAMERA
@@ -49,6 +60,11 @@ async function startVerification() {
             new faceapi.TinyFaceDetectorOptions()
         ).withFaceLandmarks();
 
+        if (!modelsLoaded) {
+            alert("Models not loaded yet");
+            return;
+        }
+        
         if (!detection) {
             statusText.innerText = "Face not detected";
             return;
