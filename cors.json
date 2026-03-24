@@ -1,0 +1,7 @@
+[
+  {
+    "origin": ["https://face-attendance-system-bx7c.onrender.com"],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]
