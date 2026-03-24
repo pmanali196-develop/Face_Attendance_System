@@ -78,10 +78,10 @@ async function startVerification() {
         let imgData = ctx.getImageData(0, 0, 320, 240);
         let d = imgData.data;
 
-        for (let i = 0; i < d.length; i += 4) {
-            let avg = (d[i] + d[i + 1] + d[i + 2]) / 3;
-            d[i] = d[i + 1] = d[i + 2] = avg;
-        }
+        // for (let i = 0; i < d.length; i += 4) {
+        //     let avg = (d[i] + d[i + 1] + d[i + 2]) / 3;
+        //     d[i] = d[i + 1] = d[i + 2] = avg;
+        // }
 
         ctx.putImageData(imgData, 0, 0);
 

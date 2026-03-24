@@ -1,16 +1,16 @@
 async function login() {
 
-    let username = document.getElementById('username').value;
-    console.log(username);
+    let email = document.getElementById('email').value;
+    console.log(email);
     let password = document.getElementById('password').value;
     console.log(password);
 
-    if (!username || !password) {
-        alert("Please enter username and password");
+    if (!email || !password) {
+        alert("Please enter email and password");
         return;
     }
 
-    if (!username.includes("@")) {
+    if (!email.includes("@")) {
         alert("Please enter valid email");
         return;
     }
@@ -20,7 +20,7 @@ async function login() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                username: username,
+                email: email,
                 password: password
             })
         });

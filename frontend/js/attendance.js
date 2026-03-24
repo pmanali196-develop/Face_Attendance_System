@@ -108,6 +108,7 @@ async function loadLabeledImages(empId) {
     let user = await res.json();
 
     if (!user.images || user.images.length === 0) {
+        console.log("No images in DB");
         return null;
     }
 
@@ -115,6 +116,8 @@ async function loadLabeledImages(empId) {
 
     for (let url of user.images) {
         try {
+            console.log("Loading image:", url);
+
             const img = await faceapi.fetchImage(url);
 
             const detection = await faceapi.detectSingleFace(img)
@@ -122,17 +125,23 @@ async function loadLabeledImages(empId) {
                 .withFaceDescriptor();
 
             if (detection) {
+                console.log("Face detected");
                 descriptions.push(detection.descriptor);
             }
-
-            if (!modelsLoaded) {
-                alert("Models not loaded yet");
-                return;
+            else {
+                console.log("Face not detected");
             }
+
+            // if (!modelsLoaded) {
+            //     alert("Models not loaded yet");
+            //     return;
+            // }
         } catch (e) {
-            console.log("Image load error");
+            console.log("Image load error", e);
         }
     }
+
+    console.log("Total descriptors: ", descriptions.length);
 
     return new faceapi.LabeledFaceDescriptors(empId, descriptions);
 }
