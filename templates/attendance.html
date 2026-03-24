@@ -13,8 +13,10 @@
     <div class="container">
         <h2>Attendance</h2>
 
-        <input id="emp_id" placeholder="Employee ID">
+        <input id="emp_id" placeholder="Employee ID" oninput="fetchEmployee()">
         <input id="dept" placeholder="Department">
+
+        <p id="emp_name" style="font-weight:bold; margin-top:10px;"></p>
 
         <video id="video" width="280" height="240" autoplay muted></video>
 

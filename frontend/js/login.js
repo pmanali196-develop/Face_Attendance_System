@@ -11,7 +11,7 @@ async function login() {
     }
 
     if (!username.includes("@")) {
-        alert("Please enter valid email ❌");
+        alert("Please enter valid email");
         return;
     }
 

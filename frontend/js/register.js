@@ -27,7 +27,7 @@ async function startCamera() {
         video.srcObject = stream;
         statusText.innerText = "Camera Started";
     } catch {
-        alert("Camera permission denied ❌");
+        alert("Camera permission denied");
     }
 }
 
@@ -50,7 +50,7 @@ async function startVerification() {
         ).withFaceLandmarks();
 
         if (!detection) {
-            statusText.innerText = "Face not detected ❌";
+            statusText.innerText = "Face not detected";
             return;
         }
 
@@ -85,12 +85,12 @@ async function startVerification() {
             console.log("Images captured:", images.length);
 
             if (!blinkDetected) {
-                alert("Blink required ❌");
+                alert("Blink required");
                 return;
             }
 
             if (Object.values(headMoves).includes(false)) {
-                alert("Move head in all directions ❌");
+                alert("Move head in all directions");
                 return;
             }
 
@@ -103,6 +103,10 @@ async function startVerification() {
 // REGISTER USER
 async function registerUser() {
 
+    if(!username.includes("@")) {
+        alert("Please enter valid email");
+        return;
+    }
     if (images.length < 15) {
         alert("Complete face verification first");
         return;

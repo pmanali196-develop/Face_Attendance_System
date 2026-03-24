@@ -15,6 +15,35 @@ async function loadModels(){
 
 loadModels();
 
+async function fetchEmployee(){
+
+    let empId = document.getElementById('emp_id').value;
+    let dept = document.getElementById('dept').value;
+
+    if(!empId){
+        document.getElementById('emp_name').innerText = "";
+        return;
+    }
+
+    try{
+        let res = await fetch(`/api/employee/${empId}`);
+        // let res1 = await fetch(`/api/employee/${dept}`);
+        let data = await res.json();
+        // let data1 = await res1.json();
+
+        console.log(data.name);
+
+        if(data && data.name){
+            document.getElementById('emp_name').innerText = "Name: " + data.name;
+        }else{
+            document.getElementById('emp_name').innerText = "Employee not found ❌";
+        }
+
+    }catch{
+        document.getElementById('emp_name').innerText = "Error fetching data";
+    }
+}
+
 // CAMERA
 async function startCamera(){
     try{
@@ -27,42 +56,42 @@ async function startCamera(){
 }
 
 // GPS CHECK
-async function checkLocation(){
+// async function checkLocation(){
 
-    return new Promise((resolve, reject)=>{
+//     return new Promise((resolve, reject)=>{
 
-        navigator.geolocation.getCurrentPosition(async pos=>{
+//         navigator.geolocation.getCurrentPosition(async pos=>{
 
-            let res = await fetch('/api/get-location');
-            let loc = await res.json();
+//             let res = await fetch('/api/get-location');
+//             let loc = await res.json();
 
-            if(!loc.lat){
-                alert("Admin has not set location");
-                reject();
-                return;
-            }
+//             if(!loc.lat){
+//                 alert("Admin has not set location");
+//                 reject();
+//                 return;
+//             }
 
-            let dist = getDistance(
-                pos.coords.latitude,
-                pos.coords.longitude,
-                loc.lat,
-                loc.lng
-            );
+//             let dist = getDistance(
+//                 pos.coords.latitude,
+//                 pos.coords.longitude,
+//                 loc.lat,
+//                 loc.lng
+//             );
 
-            if(dist > loc.radius){
-                alert("Outside company area");
-                reject();
-            }else{
-                resolve();
-            }
+//             if(dist > loc.radius){
+//                 alert("Outside company area");
+//                 reject();
+//             }else{
+//                 resolve();
+//             }
 
-        }, ()=>{
-            alert("Location permission denied");
-            reject();
-        });
+//         }, ()=>{
+//             alert("Location permission denied");
+//             reject();
+//         });
 
-    });
-}
+//     });
+// }
 
 // LOAD DATASET
 async function loadLabeledImages(empId){
@@ -106,11 +135,11 @@ async function verifyAndMark(){
     }
 
     // STEP 1: GPS CHECK
-    try{
-        await checkLocation();
-    }catch{
-        return;
-    }
+    // try{
+    //     await checkLocation();
+    // }catch{
+    //     return;
+    // }
 
     statusText.innerText = "Verifying face...";
 
