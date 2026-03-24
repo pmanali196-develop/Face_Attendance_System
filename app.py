@@ -69,7 +69,7 @@ def login():
         data = request.json
 
         users = db.collection('login') \
-            .where('username', '==', data['username']) \
+            .where('email', '==', data['email']) \
             .stream()
 
         for user in users:
@@ -80,7 +80,7 @@ def login():
                 session['role'] = u['role']
                 session['employee_id'] = u.get('employee_id')
 
-                if '@' not in data['username']:
+                if '@' not in data['email']:
                     return jsonify({"success": False, "error": "Use email"}), 400
 
                 return jsonify({
@@ -167,7 +167,7 @@ def register():
 
         # Save login (plaintext password)
         db.collection('login').add({
-            "username": data['email'],
+            "email": data['email'],
             "password": data['password'],
             "role": data['role'],
             "employee_id": emp_id
