@@ -119,15 +119,11 @@ async function startVerification() {
 // REGISTER USER
 async function registerUser() {
 
-    if(!email.includes("@")) {
-        alert("Please enter valid email");
-        return;
-    }
     if (images.length < 15) {
         alert("Complete face verification first");
         return;
     }
-
+    
     let data = {
         employee_id: document.getElementById('emp_id').value,
         name: document.getElementById('name').value,
@@ -137,7 +133,12 @@ async function registerUser() {
         role: document.getElementById('role').value,
         images: images
     };
-
+    
+    if(!email.includes("@")) {
+        alert("Please enter valid email");
+        return;
+    }
+    
     let res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
