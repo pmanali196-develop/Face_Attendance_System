@@ -44,7 +44,7 @@ async function fetchEmployee() {
         if (data && data.name) {
             document.getElementById('emp_name').innerText = "Name: " + data.name;
         } else {
-            document.getElementById('emp_name').innerText = "Employee not found ❌";
+            document.getElementById('emp_name').innerText = "Employee not found";
         }
 
     } catch {

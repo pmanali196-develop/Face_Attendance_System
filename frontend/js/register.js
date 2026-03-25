@@ -119,7 +119,7 @@ async function startVerification() {
 // REGISTER USER
 async function registerUser() {
 
-    if(!username.includes("@")) {
+    if(!email.includes("@")) {
         alert("Please enter valid email");
         return;
     }
