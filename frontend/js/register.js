@@ -134,11 +134,11 @@ async function registerUser() {
         images: images
     };
     
-    if(!email.includes("@")) {
+    if(!data.email.includes("@")) {
         alert("Please enter valid email");
         return;
     }
-    
+
     let res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
