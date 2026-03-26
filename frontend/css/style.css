@@ -19,8 +19,8 @@ body {
 .container {
     background: rgba(255, 255, 255, 0.95);
     padding: 30px;
-    width: 90%;
-    max-width: 400px;
+    width: 350px;
+    /* max-width: 400px; */
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     text-align: center;
@@ -159,7 +159,7 @@ video {
 @media (max-width: 768px) {
 
     .container {
-        width: 90%;
+        /* width: 90%; */
         padding: 25px;
     }
 
@@ -192,6 +192,7 @@ video {
 
     .container {
         width: 100%;
+        max-width: none;
         padding: 20px;
         border-radius: 10px;
     }
