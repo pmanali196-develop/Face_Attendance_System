@@ -72,20 +72,31 @@ async function startVerification() {
 
         let box = detection.detection.box;
 
-        ctx.drawImage(video, box.x, box.y, box.width, box.height, 0, 0, 320, 240);
+        let padding = 80;
+
+        let x = Math.max(0, box.x - padding);
+        let y = Math.max(0, box.y - padding);
+        let w = box.width + padding * 2;
+        let h = box.height + padding * 2;
+        // ctx.drawImage(video, box.x, box.y, box.width, box.height, 0, 0, 320, 240);
+
+        canvas.width = w;
+        canvas.height = h;
+
+        ctx.drawImage(video, x, y, w, h, 0, 0, w, h);
 
         // grayscale
-        let imgData = ctx.getImageData(0, 0, 320, 240);
-        let d = imgData.data;
+        // let imgData = ctx.getImageData(0, 0, 320, 240);
+        // let d = imgData.data;
 
         // for (let i = 0; i < d.length; i += 4) {
         //     let avg = (d[i] + d[i + 1] + d[i + 2]) / 3;
         //     d[i] = d[i + 1] = d[i + 2] = avg;
         // }
 
-        ctx.putImageData(imgData, 0, 0);
+        // ctx.putImageData(imgData, 0, 0);
 
-        images.push(canvas.toDataURL("image/jpeg"));
+        images.push(canvas.toDataURL("image/jpeg", 1.0));
 
         if (detectBlink(detection.landmarks)) blinkDetected = true;
         detectHeadMovement(detection.landmarks, headMoves);

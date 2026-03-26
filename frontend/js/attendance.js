@@ -120,7 +120,13 @@ async function loadLabeledImages(empId) {
 
             const img = await faceapi.fetchImage(url);
 
-            const detection = await faceapi.detectSingleFace(img)
+            // document.body.appendChild(img);  // debug line to match images...
+
+            const detection = await faceapi.detectSingleFace(img,
+                new faceapi.SsdMobilenetv1Options({
+                    minConfidence: 0.2
+                })
+            )
                 .withFaceLandmarks()
                 .withFaceDescriptor();
 
@@ -180,7 +186,10 @@ async function verifyAndMark() {
 
         const detection = await faceapi.detectSingleFace(
             video,
-            new faceapi.TinyFaceDetectorOptions()
+            new faceapi.TinyFaceDetectorOptions({
+                inputSize: 320,
+                scoreThreshold: 0.3     // default is 0.5 (too strict)
+            })
         ).withFaceLandmarks().withFaceDescriptor();
 
         if (!modelsLoaded) {

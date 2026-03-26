@@ -25,7 +25,7 @@ if not firebase_admin._apps:
         cred = credentials.Certificate("firebase_key.json")
 
     firebase_admin.initialize_app(cred, {
-        'storageBucket': 'online-attendance-system-5b66b.appspot.com'
+        'storageBucket': 'online-attendance-system-5b66b.firebasestorage.app'
     })
 
 db = firestore.client()
@@ -133,11 +133,21 @@ def register():
 
                 print("Uploaded successfully")
 
-                blob.make_public()
+                # blob.make_public()
 
-                print("Uploaded:", blob.public_url)  # DEBUG
+                from urllib.parse import quote
 
-                image_urls.append(blob.public_url)
+                file_path = f"faces/{emp_id}/{i}.jpg"
+
+                encoded_path = quote(file_path, safe='')
+
+                download_url = f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/{encoded_path}?alt=media"
+
+                print("Uploaded:", download_url)  # DEBUG
+
+                image_urls.append(download_url)
+
+                # image_urls.append(blob.public_url)
 
                 # img_data = base64.b64decode(img.split(',')[1])
 
