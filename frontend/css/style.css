@@ -19,7 +19,8 @@ body {
 .container {
     background: rgba(255, 255, 255, 0.95);
     padding: 30px;
-    width: 350px;
+    width: 90%;
+    max-width: 400px;
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     text-align: center;
@@ -114,6 +115,7 @@ button.secondary:hover {
 
 /* ===== VIDEO ===== */
 video {
+    max-width: 100%;
     border-radius: 10px;
     margin-top: 10px;
     border: 2px solid #2563eb;
@@ -142,5 +144,80 @@ video {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* RESPONSIVE DESIGN */
+
+/* Make container flexible */
+.container {
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Tablets */
+@media (max-width: 768px) {
+
+    .container {
+        width: 90%;
+        padding: 25px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    input {
+        padding: 11px;
+        font-size: 14px;
+    }
+
+    button {
+        padding: 11px;
+        font-size: 14px;
+    }
+
+    video {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        width: 100%;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    h2 {
+        font-size: 20px;
+    }
+
+    input {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    button {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    video {
+        width: 100%;
+        height: auto;
+    }
+
+    /* Fix button spacing */
+    div[style*="display:flex"] {
+        flex-direction: column !important;
+        gap: 8px !important;
     }
 }
