@@ -266,7 +266,7 @@ def mark_attendance():
             "employee_id": data['employee_id'],
             "date": data['date'],
             "check_in": data.get('check_in'),
-            "check_out": data.get('check_out')
+            # "check_out": data.get('check_out')
         })
 
         return jsonify({"status": "success"})

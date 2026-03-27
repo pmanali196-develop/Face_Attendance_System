@@ -15,7 +15,7 @@
         <h2>Attendance</h2>
 
         <input id="emp_id" placeholder="Employee ID" oninput="fetchEmployee()">
-        <input id="dept" placeholder="Department">
+        <input id="dept" placeholder="Department" oninput="fetchEmployee()">
 
         <p id="emp_name" style="font-weight:bold; margin-top:10px;"></p>
 
@@ -24,7 +24,7 @@
         <p id="status"></p>
 
         <button onclick="startCamera()">Start Camera</button>
-        <button onclick="verifyAndMark()">Take Attendance</button>
+        <button id="attendanceBtn" onclick="verifyAndMark()" disabled>Take Attendance</button>
 
         <div style="display:flex; gap:10px; margin-top: 15px;">
             <button class="secondary" onclick="goBack()">Back</button>

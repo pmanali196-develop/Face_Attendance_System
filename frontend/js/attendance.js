@@ -1,5 +1,7 @@
 console.log("Attendance script loaded");
 
+let cachedDescriptors = null;
+
 let video = document.getElementById('video');
 let statusText = document.getElementById('status');
 
@@ -27,10 +29,16 @@ async function fetchEmployee() {
 
     let empId = document.getElementById('emp_id').value;
     let dept = document.getElementById('dept').value;
+    let empName = document.getElementById('emp_name');
+    let btn = document.getElementById('attendanceBtn');
 
-    if (!empId) {
-        document.getElementById('emp_name').innerText = "";
+    if (!empId || !dept) {
+        empName.innerText = "";
+        btn.disabled = true;
         return;
+    }
+    else {
+        empName.innerText = "Checking...";
     }
 
     try {
@@ -40,15 +48,22 @@ async function fetchEmployee() {
         // let data1 = await res1.json();
 
         console.log(data.name);
+        console.log(data.department);
 
-        if (data && data.name) {
-            document.getElementById('emp_name').innerText = "Name: " + data.name;
+        if (data && data.name && data.department === dept) {
+            empName.innerText = "Name: " + data.name;
+
+            btn.disabled = false;
         } else {
-            document.getElementById('emp_name').innerText = "Employee not found";
+            empName.innerText = "Employee not found / Department mismatch";
+
+            btn.disabled = true;
         }
 
     } catch {
-        document.getElementById('emp_name').innerText = "Error fetching data";
+        empName.innerText = "Error fetching data";
+
+        btn.disabled = true;
     }
 }
 
@@ -64,16 +79,16 @@ async function startCamera() {
 }
 
 // GPS CHECK
-async function checkLocation(){
+async function checkLocation() {
 
-    return new Promise((resolve, reject)=>{
+    return new Promise((resolve, reject) => {
 
-        navigator.geolocation.getCurrentPosition(async pos=>{
+        navigator.geolocation.getCurrentPosition(async pos => {
 
             let res = await fetch('/api/get-location');
             let loc = await res.json();
 
-            if(!loc.lat){
+            if (!loc.lat) {
                 alert("Admin has not set location");
                 reject();
                 return;
@@ -86,14 +101,14 @@ async function checkLocation(){
                 loc.lng
             );
 
-            if(dist > loc.radius){
+            if (dist > loc.radius) {
                 alert("Outside company area");
                 reject();
-            }else{
+            } else {
                 resolve();
             }
 
-        }, ()=>{
+        }, () => {
             alert("Location permission denied");
             reject();
         });
@@ -103,6 +118,11 @@ async function checkLocation(){
 
 // LOAD DATASET
 async function loadLabeledImages(empId) {
+
+    if (cachedDescriptors) {
+        console.log("Using cached descriptors");
+        return cachedDescriptors;
+    }
 
     let res = await fetch(`/api/employee/${empId}`);
     let user = await res.json();
@@ -149,7 +169,9 @@ async function loadLabeledImages(empId) {
 
     console.log("Total descriptors: ", descriptions.length);
 
-    return new faceapi.LabeledFaceDescriptors(empId, descriptions);
+    cachedDescriptors = new faceapi.LabeledFaceDescriptors(empId, descriptions);
+
+    return cachedDescriptors;
 }
 
 // MAIN FUNCTION
@@ -163,9 +185,9 @@ async function verifyAndMark() {
     }
 
     // STEP 1: GPS CHECK
-    try{
+    try {
         await checkLocation();
-    }catch{
+    } catch {
         return;
     }
 
@@ -187,7 +209,7 @@ async function verifyAndMark() {
         const detection = await faceapi.detectSingleFace(
             video,
             new faceapi.TinyFaceDetectorOptions({
-                inputSize: 320,
+                inputSize: 160,
                 scoreThreshold: 0.3     // default is 0.5 (too strict)
             })
         ).withFaceLandmarks().withFaceDescriptor();
@@ -206,19 +228,32 @@ async function verifyAndMark() {
 
         attempts++;
 
-        statusText.innerText = `Matching... ${attempts}`;
+        // statusText.innerText = `Matching... ${attempts}`;
 
-        if (attempts > 10) {
+        // if (attempts > 6) {
 
+        //     clearInterval(interval);
+
+        //     if (match.label === "unknown") {
+        //         alert("Face not matched");
+        //         return;
+        //     }
+
+        //     // SUCCESS
+        //     await markAttendance(empId);
+        // }
+
+        if (match.label !== "unknown") {
+            clearInterval(interval);
+            await markAttendance(empId);
+            return;
+        }
+
+        // fallback after attempts
+        if (attempts > 6) {
             clearInterval(interval);
 
-            if (match.label === "unknown") {
-                alert("Face not matched");
-                return;
-            }
-
-            // SUCCESS
-            await markAttendance(empId);
+            alert("Face not matched");
         }
 
     }, 500);
