@@ -43,7 +43,6 @@ async function searchLocation(){
     let lat = parseFloat(data[0].lat);
     let lon = parseFloat(data[0].lon);
 
-    // Move map
     map.setView([lat, lon], 15);
 
     if(marker) map.removeLayer(marker);

@@ -1,4 +1,3 @@
-# IMPORTS
 from flask import Flask, render_template, request, jsonify, session, redirect
 from flask_cors import CORS
 import firebase_admin
@@ -7,13 +6,13 @@ import os
 import json
 import base64
 
-# APP CONFIG
+# App Config
 app = Flask(__name__, template_folder='templates', static_folder='frontend')
 CORS(app)
 
 app.secret_key = "supersecretkey"
 
-# FIREBASE INIT
+# Firebase Init
 if not firebase_admin._apps:
 
     if os.environ.get("FIREBASE_KEY"):
@@ -30,12 +29,12 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# DATASET PATH
+# Dataset Path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATASET_PATH = os.path.abspath("dataset")
 os.makedirs(DATASET_PATH, exist_ok=True)
 
-# ROUTES (PAGES)
+# Routes
 @app.route('/')
 def login_page():
     return render_template('login.html')
@@ -62,7 +61,7 @@ def admin():
         return redirect('/')
     return render_template('admin.html')
 
-# LOGIN API
+# Login API
 @app.route('/api/login', methods=['POST'])
 def login():
     try:
@@ -75,7 +74,6 @@ def login():
         for user in users:
             u = user.to_dict()
 
-            # Plaintext password check
             if u['password'] == data['password']:
                 session['role'] = u['role']
                 session['employee_id'] = u.get('employee_id')
@@ -99,41 +97,28 @@ def logout():
     session.clear()
     return redirect('/')
 
-# REGISTER API
+# Register API
 @app.route('/api/register', methods=['POST'])
 def register():
     try:
         data = request.json
 
-        # Debug line
         print("Received images:", len(data['images']))
 
         emp_id = data['employee_id']
 
-
-        # Debug line
-        # print("Received images:", len(data['images']))
-
         bucket = storage.bucket()
-        print("Using bucket:", bucket.name)
         image_urls = []
 
         for i, img in enumerate(data['images']):
-            print("Processing image: ", i)
             try:
-                # print("Uploading image:", i)
-
                 img_data = base64.b64decode(img.split(',')[1])
 
                 blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
 
-                print("Uploading...")
-
                 blob.upload_from_string(img_data, content_type='image/jpeg')
 
                 print("Uploaded successfully")
-
-                # blob.make_public()
 
                 from urllib.parse import quote
 
@@ -143,21 +128,9 @@ def register():
 
                 download_url = f"https://firebasestorage.googleapis.com/v0/b/{bucket.name}/o/{encoded_path}?alt=media"
 
-                print("Uploaded:", download_url)  # DEBUG
+                print("Uploaded:", download_url)
 
                 image_urls.append(download_url)
-
-                # image_urls.append(blob.public_url)
-
-                # img_data = base64.b64decode(img.split(',')[1])
-
-                # blob = bucket.blob(f"faces/{emp_id}/{i}.jpg")
-                # blob.upload_from_string(img_data, content_type='image/jpeg')
-
-                # # Make public (for easy access)
-                # blob.make_public()
-
-                # image_urls.append(blob.public_url)
 
             except Exception as e:
                 print("Upload error:", e)
@@ -175,7 +148,7 @@ def register():
             "images": image_urls
         })
 
-        # Save login (plaintext password)
+        # Save login
         db.collection('login').add({
             "username": data['email'],
             "password": data['password'],
@@ -183,35 +156,12 @@ def register():
             "employee_id": emp_id
         })
 
-        # Save images locally
-        # folder = os.path.join(DATASET_PATH, emp_id)
-        # os.makedirs(folder, exist_ok=True)
-
-        # for i, img in enumerate(data['images']):
-        #     try:
-        #         img_data = base64.b64decode(img.split(',')[1])
-        #         file_path = os.path.join(folder, f"{i}.jpg")
-
-        #         with open(file_path, "wb") as f:
-        #             f.write(img_data)
-
-        #         print("Saved:", file_path)
-
-        #     except Exception as e:
-        #         print("Error saving image:", e)
-            # img_data = base64.b64decode(img.split(',')[1])
-            # with open(os.path.join(folder, f"{i}.jpg"), "wb") as f:
-            #     f.write(img_data)
-
-        # print("Saving images for:", emp_id)
-        # print("Total images:", len(data['images']))
-
         return jsonify({"success": True})
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# GET EMPLOYEE
+# Get Employee
 @app.route('/api/employee/<emp_id>')
 def get_employee(emp_id):
     try:
@@ -225,7 +175,7 @@ def get_employee(emp_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# LOCATION APIs
+# Location APIs
 @app.route('/api/set-location', methods=['POST'])
 def set_location():
     try:
@@ -256,7 +206,7 @@ def get_location():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# ATTENDANCE API
+# Attendance API
 @app.route('/api/attendance', methods=['POST'])
 def mark_attendance():
     try:
@@ -274,7 +224,7 @@ def mark_attendance():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# RUN APP
+# Run App
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)

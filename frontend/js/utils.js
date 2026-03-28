@@ -1,4 +1,4 @@
-// DISTANCE (HAVERSINE)
+// Distance (Haversine)
 function getDistance(lat1, lon1, lat2, lon2){
 
     if(!lat1 || !lon1 || !lat2 || !lon2) return Infinity;
@@ -19,7 +19,7 @@ function getDistance(lat1, lon1, lat2, lon2){
     return R * c;
 }
 
-// BLINK DETECTION (IMPROVED)
+// Blink Detection
 function detectBlink(landmarks){
 
     if(!landmarks) return false;
@@ -34,7 +34,7 @@ function detectBlink(landmarks){
     return ratio < 0.25; // tuned threshold
 }
 
-// HEAD MOVEMENT DETECTION
+// Head Movement Detection
 function detectHeadMovement(landmarks, state){
 
     if(!landmarks || !state) return;
@@ -48,7 +48,7 @@ function detectHeadMovement(landmarks, state){
     if(nose.y > 160) state.down = true;
 }
 
-// HELPER: VALIDATE FORM
+// Validate Form
 function validateFields(fields){
 
     for(let f of fields){

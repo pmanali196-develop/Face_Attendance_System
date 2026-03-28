@@ -7,7 +7,7 @@ let statusText = document.getElementById('status');
 
 let modelsLoaded = false;
 
-// LOAD MODELS
+// Load Models
 async function loadModels() {
 
     await faceapi.nets.tinyFaceDetector.loadFromUri('/frontend/models');
@@ -16,11 +16,9 @@ async function loadModels() {
 
     await faceapi.nets.faceRecognitionNet.loadFromUri('/frontend/models');
 
-    // ADD THIS (IMPORTANT FIX)
     await faceapi.nets.ssdMobilenetv1.loadFromUri('/frontend/models');
 
     modelsLoaded = true;
-    statusText.innerText = "Models Loaded";
 }
 
 loadModels();
@@ -43,31 +41,29 @@ async function fetchEmployee() {
 
     try {
         let res = await fetch(`/api/employee/${empId}`);
-        // let res1 = await fetch(`/api/employee/${dept}`);
         let data = await res.json();
-        // let data1 = await res1.json();
-
-        console.log(data.name);
-        console.log(data.department);
 
         if (data && data.name && data.department === dept) {
+
             empName.innerText = "Name: " + data.name;
-
             btn.disabled = false;
-        } else {
-            empName.innerText = "Employee not found / Department mismatch";
 
+        } else {
+
+            empName.innerText = "Employee not found / Department mismatch";
             btn.disabled = true;
+
         }
 
     } catch {
-        empName.innerText = "Error fetching data";
 
+        empName.innerText = "Error fetching data";
         btn.disabled = true;
+
     }
 }
 
-// CAMERA
+// Start Camera
 async function startCamera() {
     try {
         let stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -78,7 +74,7 @@ async function startCamera() {
     }
 }
 
-// GPS CHECK
+// GPS Check
 async function checkLocation() {
 
     return new Promise((resolve, reject) => {
@@ -116,11 +112,10 @@ async function checkLocation() {
     });
 }
 
-// LOAD DATASET
+// Load Dataset
 async function loadLabeledImages(empId) {
 
     if (cachedDescriptors) {
-        console.log("Using cached descriptors");
         return cachedDescriptors;
     }
 
@@ -128,7 +123,6 @@ async function loadLabeledImages(empId) {
     let user = await res.json();
 
     if (!user.images || user.images.length === 0) {
-        console.log("No images in DB");
         return null;
     }
 
@@ -136,11 +130,7 @@ async function loadLabeledImages(empId) {
 
     for (let url of user.images) {
         try {
-            console.log("Loading image:", url);
-
             const img = await faceapi.fetchImage(url);
-
-            // document.body.appendChild(img);  // debug line to match images...
 
             const detection = await faceapi.detectSingleFace(img,
                 new faceapi.SsdMobilenetv1Options({
@@ -151,30 +141,20 @@ async function loadLabeledImages(empId) {
                 .withFaceDescriptor();
 
             if (detection) {
-                console.log("Face detected");
                 descriptions.push(detection.descriptor);
             }
-            else {
-                console.log("Face not detected");
-            }
 
-            // if (!modelsLoaded) {
-            //     alert("Models not loaded yet");
-            //     return;
-            // }
         } catch (e) {
             console.log("Image load error", e);
         }
     }
-
-    console.log("Total descriptors: ", descriptions.length);
 
     cachedDescriptors = new faceapi.LabeledFaceDescriptors(empId, descriptions);
 
     return cachedDescriptors;
 }
 
-// MAIN FUNCTION
+// Main Function
 async function verifyAndMark() {
 
     let empId = document.getElementById('emp_id').value;
@@ -184,7 +164,6 @@ async function verifyAndMark() {
         return;
     }
 
-    // STEP 1: GPS CHECK
     try {
         await checkLocation();
     } catch {
@@ -228,28 +207,12 @@ async function verifyAndMark() {
 
         attempts++;
 
-        // statusText.innerText = `Matching... ${attempts}`;
-
-        // if (attempts > 6) {
-
-        //     clearInterval(interval);
-
-        //     if (match.label === "unknown") {
-        //         alert("Face not matched");
-        //         return;
-        //     }
-
-        //     // SUCCESS
-        //     await markAttendance(empId);
-        // }
-
         if (match.label !== "unknown") {
             clearInterval(interval);
             await markAttendance(empId);
             return;
         }
 
-        // fallback after attempts
         if (attempts > 6) {
             clearInterval(interval);
 
@@ -259,7 +222,7 @@ async function verifyAndMark() {
     }, 500);
 }
 
-// SAVE ATTENDANCE
+// Save Attendance
 async function markAttendance(empId) {
 
     await fetch('/api/attendance', {

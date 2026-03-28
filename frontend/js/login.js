@@ -1,9 +1,7 @@
 async function login() {
 
     let username = document.getElementById('username').value;
-    console.log(username);
     let password = document.getElementById('password').value;
-    console.log(password);
 
     if (!username || !password) {
         alert("Please enter email and password");
@@ -33,9 +31,7 @@ async function login() {
 
         if (data.success) {
 
-            console.log(data.role);
-
-            // ROLE-BASED REDIRECTION
+            // Role-based Redirection
             if (data.role === "admin") {
                 window.location.href = "/admin";
             } else {
